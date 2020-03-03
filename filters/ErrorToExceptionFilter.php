@@ -20,6 +20,12 @@ class ErrorToExceptionFilter extends \yii\base\Behavior
     public function afterAction($event)
     {
         $response = Yii::$app->getModule('oauth2')->getServer()->getResponse();
+        $headers = $response->getHttpHeaders();
+        if (!empty($headers)) {
+            foreach ($headers as $k => $v) {
+                Yii::$app->response->headers[$k] = $v;
+            }
+        }
         $optional = $event->action->controller->getBehavior('authenticator')->optional;
         $currentAction = $event->action->id;
         $isValid = true;
